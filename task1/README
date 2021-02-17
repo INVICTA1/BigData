@@ -6,12 +6,13 @@ If you don't have Python installed, follow the link and download it.
 https://www.python.org/downloads/
 
 Open CMD and write:
--- pip install -r requirements.txt
 
+-- pip install -r requirements.txt
 -- python main.py
 
 
 Files for testing:
+
 CSV
 # resources/csv/userdata1.csv
 # resources/csv/username-password-recovery-code.csv
