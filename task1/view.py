@@ -22,7 +22,7 @@ def parsing_csv_in_parquet(path_file, outfile):
         parquet.write_table(table, outfile)
         return 'File: ' + outfile
     except Exception as e:
-        return e
+        raise e
 
 
 def parsing_parquet_in_csv(path_file, outfile):
@@ -37,7 +37,7 @@ def parsing_parquet_in_csv(path_file, outfile):
         table.to_csv(outfile, index=False)
         return 'File: ' + outfile
     except BaseException as e:
-        return 'Error:', e
+        raise e
 
 
 def get_parquet_schema(path_file):
@@ -46,4 +46,4 @@ def get_parquet_schema(path_file):
         parquet_schema = parquet.ParquetFile(path_file)
         return parquet_schema.schema
     except Exception as e:
-        return e
+        raise e
