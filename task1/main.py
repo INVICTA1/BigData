@@ -18,7 +18,7 @@ def parsing_csv_in_parquet(file, outfile):
 
     try:
         file_csv = pd.read_csv(file, index_col=False, header=0)
-        table = Table.from_pandas(file_csv, preserve_index=False)
+        table = Table.from_pandas(file_csv, preserve_index=True)
         if not outfile:
             outfile = find_name_file(file) + '.parquet'
         parquet.write_table(table, outfile)
@@ -36,7 +36,7 @@ def parsing_parquet_in_csv(file, outfile):
         table = file_parquet.to_pandas()
         if not outfile:
             outfile = find_name_file(file) + '.csv'
-        table.to_csv(outfile)
+        table.to_csv(outfile,index=False)
         return 'File: ' + outfile
     except BaseException as e:
         return 'Error:', e
@@ -78,7 +78,7 @@ def main():
             return 'Format file not csv or parquet'
 
     if namespace.schema:
-        format_schema = os.path.splitext(namespace.outfile)[1]
+        format_schema = os.path.splitext(namespace.schema)[-1]
         if format_schema == '.parquet':
             return get_parquet_schema(namespace.schema)
         else:
