@@ -1,7 +1,7 @@
 import sys
 import argparse
 import os
-from converting import parsing_parquet_in_csv, get_parquet_schema, parsing_csv_in_parquet
+from converter import parsing_parquet_in_csv, get_parquet_schema, parsing_csv_in_parquet
 
 
 def get_parse_arguments():
