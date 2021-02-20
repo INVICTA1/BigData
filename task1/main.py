@@ -13,11 +13,14 @@ def get_parse_arguments():
     parser.add_argument('-s', '--schema')
 
     return parser
+
+
 def check_outfile(outfile):
     """ Check outfile file on right format"""
 
     format_outfile = os.path.splitext(outfile)[1]
     return format_outfile in ['.csv', '.parquet']
+
 
 def main():
     """Processing the command line and calling functions for the parsing file """
@@ -26,7 +29,7 @@ def main():
     namespace = parser.parse_args(sys.argv[1:])  # 1-й параметр - расположение файла
     if namespace.outfile:
         if not check_outfile(namespace.outfile):
-            return 'Outfile not csv or parquet format'
+            raise Exception('Outfile not csv or parquet format')
     if namespace.file:
         name_file = os.path.basename(namespace.file)
         format_file = os.path.splitext(name_file)[1]
@@ -35,7 +38,7 @@ def main():
         elif format_file == '.parquet':
             return parsing_parquet_in_csv(namespace.file, namespace.outfile)
         else:
-            return 'Format file not csv or parquet'
+            raise Exception('Format file not csv or parquet')
 
     if namespace.schema:
         format_schema = os.path.splitext(namespace.schema)[-1]
