@@ -1,50 +1,45 @@
 import builtins
 import sys
+from params import Arguments
 
 path_to_movies = r'resources\movies.csv'
 path_to_ratings = r'resources\ratings.csv'
 
 
-class Params:
-    def __init__(self, count, genres, year_from, year_to, regexp):
-        self.count = count
-        self.genres = genres
-        self.year_from = year_from
-        self.year_to = year_to
-        self.regexp = regexp
-
-
-def get_dict_ratings(path):
+def get_dict_scores(path):
     """Read csv file and return dict{movieId:[rating]}"""
-    ratings = {}
+
+    dict_scores = {}
     with open(path) as csv_file:
         for line in csv_file:
             row = csv_file.readline()
-            list_from_row = row.split(',')
-            movie_id = int(list_from_row[1])
-            score = list_from_row[2]
-            if ratings.get(movie_id):
-                ratings[movie_id].append(float(score))
+            cells = row.split(',')
+            movie_id = int(cells[1])
+            score = cells[2]
+            if dict_scores.get(movie_id):
+                dict_scores[movie_id].append(float(score))
             else:
-                ratings[movie_id] = [float(score)]
+                dict_scores[movie_id] = [float(score)]
 
-    return ratings
-
-
+    return dict_scores
 
 
+def get_genres(cells):
+    """Get genres from cells"""
 
-def get_genres(row_list):
-    genres = row_list[-1].replace('\n', '')
+    genres = cells[-1].replace('\n', '')
     list_genres = genres.split('|')
+
     return list_genres
 
 
-def get_name_and_year(row_list):
-    if row_list.__len__() == 3:
-        name_with_year = row_list[1]
+def get_name_and_year(cells):
+    """Find name and year from cells and return this data"""
+
+    if cells.__len__() == 3:
+        name_with_year = cells[1]
     else:
-        name_with_year = ','.join(row_list[1:-1])
+        name_with_year = ','.join(cells[1:-1])
     list_words_from_name = name_with_year.split(' ')
     year_from_name = list_words_from_name[-1]
     year = year_from_name[year_from_name.find('(') + 1: year_from_name.find(')')]
@@ -53,41 +48,49 @@ def get_name_and_year(row_list):
     else:
         name_movie = ' '.join(list_words_from_name)
         year = None
+
     return name_movie, year
 
 
 def get_rating(dict_ratings, movie_id):
+    """Find average rating and return rating data """
+
     if dict_ratings.get(movie_id):
-        list_ratings = dict_ratings[movie_id]
-        rating = round(sum(list_ratings) / len(list_ratings), 1)
+        list_score = dict_ratings[movie_id]
+        rating = round(sum(list_score) / len(list_score), 1)
     else:
         rating = None
+
     return rating
 
 
-def create_dict_from_file(path):
+def read_file(path):
+    """Read CSV file adn create movie dictionary """
+
     dict_movies = {}
-    ratings_dict = get_dict_ratings(path_to_ratings)
+    dict_scores = get_dict_scores(path_to_ratings)
     with open(path) as csv_file:
         for line in csv_file:
             row = csv_file.readline()
             if row:
-                row_list = row.split(',')
-                movie_id = int(row_list[0])
-                list_genres = get_genres(row_list)
-                name_movie, year = get_name_and_year(row_list)
-                rating = get_rating(ratings_dict, movie_id)
-                # print(movie_id,list_genres,name_movie,year,rating)
+                cells = row.split(',')
+                movie_id = int(cells[0])
+                list_genres = get_genres(cells)
+                name_movie, year = get_name_and_year(cells)
+                rating = get_rating(dict_scores, movie_id)
                 dict_movies[movie_id] = {'name': name_movie,
                                          'year': year,
                                          'genres': list_genres,
                                          'rating': rating}
+
     return dict_movies
 
 
 def main():
-    dict_movies = create_dict_from_file(path_to_movies)
-    print(dict_movies)
+    # dict_movies = read_file(path_to_movies)
+    arguments = Arguments()
+    arguments.find_arguments()
+
 
 if __name__ == '__main__':
     main()
