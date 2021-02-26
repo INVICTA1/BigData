@@ -17,7 +17,8 @@ class Arguments:
         self.year_from = None
         self.year_to = None
 
-    def get_argument(self, list_arguments, argument):
+    @staticmethod
+    def get_argument(list_arguments, argument):
         if argument in list_arguments:
             return list_arguments[list_arguments.index(argument) + 1]
 
@@ -28,6 +29,7 @@ class Arguments:
         self.count = self.get_argument(list_arguments, self.argument_count)
         self.regexp = self.get_argument(list_arguments, self.argument_regexp)
         genres = self.get_argument(list_arguments, self.argument_genres)
-        self.genres = genres.split('|')
+        if genres is not None:
+            self.genres = genres.split('|')
         self.year_from = self.get_argument(list_arguments, self.argument_year_from)
         self.year_to = self.get_argument(list_arguments, self.argument_year_to)
