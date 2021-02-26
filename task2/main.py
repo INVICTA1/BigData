@@ -20,9 +20,9 @@ def get_dict_ratings(path):
     with open(path) as csv_file:
         for line in csv_file:
             row = csv_file.readline()
-            row_list = row.split(',')
-            movie_id = row_list[1]
-            score = row_list[2]
+            list_from_row = row.split(',')
+            movie_id = int(list_from_row[1])
+            score = list_from_row[2]
             if ratings.get(movie_id):
                 ratings[movie_id].append(float(score))
             else:
@@ -31,75 +31,63 @@ def get_dict_ratings(path):
     return ratings
 
 
-def write_genres_to_dict(movie_id, genres, dict_genres):
-    for genre in genres:
-        if dict_genres.get(genre):
-            dict_genres[genre].append(movie_id)
-        else:
-            dict_genres[genre] = [movie_id]
-    return dict_genres
 
 
-def create_movie_dict(movie_id, genres, name, year, rating):
-    # movie_dict = {'movie_id': {
-    #                     {'genres': ['жанр']},
-    #                     {'name': 'имя'},
-    #                     {'year': 'year'},
-    #                     {'rating': 'rating'}, }
-    #             }
 
-    movie_dict = {movie_id}
+def get_genres(row_list):
+    genres = row_list[-1].replace('\n', '')
+    list_genres = genres.split('|')
+    return list_genres
 
 
-def main(path):
+def get_name_and_year(row_list):
+    if row_list.__len__() == 3:
+        name_with_year = row_list[1]
+    else:
+        name_with_year = ','.join(row_list[1:-1])
+    list_words_from_name = name_with_year.split(' ')
+    year_from_name = list_words_from_name[-1]
+    year = year_from_name[year_from_name.find('(') + 1: year_from_name.find(')')]
+    if year.isdigit():
+        name_movie = ' '.join(list_words_from_name[:-1])
+    else:
+        name_movie = ' '.join(list_words_from_name)
+        year = None
+    return name_movie, year
+
+
+def get_rating(dict_ratings, movie_id):
+    if dict_ratings.get(movie_id):
+        list_ratings = dict_ratings[movie_id]
+        rating = round(sum(list_ratings) / len(list_ratings), 1)
+    else:
+        rating = None
+    return rating
+
+
+def create_dict_from_file(path):
+    dict_movies = {}
     ratings_dict = get_dict_ratings(path_to_ratings)
-    movies_dict = {}
     with open(path) as csv_file:
         for line in csv_file:
             row = csv_file.readline()
             if row:
-
                 row_list = row.split(',')
                 movie_id = int(row_list[0])
-                # genres
-                genres = row_list[-1].replace('\n', '')
-                genres = genres.split('|')
-                # name
-                if row_list.__len__() == 3:
-                    name = row_list[1]
-                else:
-                    name = ','.join(row_list[1:-1])
+                list_genres = get_genres(row_list)
+                name_movie, year = get_name_and_year(row_list)
+                rating = get_rating(ratings_dict, movie_id)
+                # print(movie_id,list_genres,name_movie,year,rating)
+                dict_movies[movie_id] = {'name': name_movie,
+                                         'year': year,
+                                         'genres': list_genres,
+                                         'rating': rating}
+    return dict_movies
 
-                # year
-                name_list = name.split(' ')
-                name = ' '.join(name_list[0:-1])
 
-                year_new = name_list[-1]
+def main():
+    dict_movies = create_dict_from_file(path_to_movies)
+    print(dict_movies)
 
-                year = year_new[year_new.find('(') + 1: year_new.find(')')]
-                if not year.isdigit():
-                    year = ''
-
-                # ratings
-                if ratings_dict.get(movie_id):
-                    rating_list = ratings_dict[movie_id]
-                    rating = round(sum(rating_list) / len(rating_list), 1)
-                else:
-                    rating = 0
-                movies_dict[movie_id] = {}
-                movies_dict[movie_id]['name'] = name
-                movies_dict[movie_id]['year'] = year
-                movies_dict[movie_id]['genres'] = genres
-                movies_dict[movie_id]['rating'] = rating
-
-        print(movies_dict)
-                # genres_dict = write_genres_to_dict(movie_id, genres, genres_dict)
-                # create_movie_dict(movie_id,genres)
-
-main(path_to_movies)
-                # Tasks
-                # просчитать для каждого фильма средний рейтинг(по id в rating файле)
-                # записать в промежуточный хеш значение id и среднего фильма и потом при чтении фильмов брать данный из хеша
-movies = {'name': {'year': '', 'genres': [], 'movieId': '', 'rating': ''}}
-moviess = {'genres': {'year': '', 'genres': [], 'movieId': '', 'rating': ''}}
-genres = {'Animation|Comedy|Fantasy': "movieId"}
+if __name__ == '__main__':
+    main()
