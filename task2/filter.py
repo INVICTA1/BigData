@@ -1,75 +1,75 @@
 import re
 
 
-def filter_by_regexp(dict_movies, regexp):
+def filter_by_regexp(movie_dict, regexp):
     """Filter data by parameter regexp"""
 
     try:
-        new_dict_movies = {}
-        for movie_id in dict_movies:
-            if re.search(regexp, dict_movies[movie_id]['name']):
-                new_dict_movies[movie_id] = dict_movies[movie_id]
-        return new_dict_movies
+        result = {}
+        for movie_id in movie_dict:
+            if re.search(regexp, movie_dict[movie_id]['name']):
+                result[movie_id] = movie_dict[movie_id]
+        return result
     except BaseException as e:
         raise Exception('Data not found by regexp', e)
 
 
-def filter_by_genres(dict_movies, genres):
+def filter_by_genres(movie_dict, genres):
     """Filter data by parameter genres"""
 
     try:
-        new_dict_movies = {}
-        for movie_id in dict_movies:
-            if set(dict_movies[movie_id]['genres']) & set(genres):
-                new_dict_movies[movie_id] = dict_movies[movie_id]
-        return new_dict_movies
+        result = {}
+        for movie_id in movie_dict:
+            if set(movie_dict[movie_id]['genres']) & set(genres):
+                result[movie_id] = movie_dict[movie_id]
+        return result
     except BaseException as e:
         raise Exception('Data not found by genres', e)
 
 
-def filter_by_from_year(dict_movies, year_from):
+def filter_by_from_year(movie_dict, year_from):
     """Filter data by parameter year_from"""
 
     try:
-        new_dict_movies = {}
-        for movie_id in dict_movies:
-            if dict_movies[movie_id]['year'] is not None and dict_movies[movie_id]['year'] >= year_from:
-                new_dict_movies[movie_id] = dict_movies[movie_id]
-        return new_dict_movies
+        result = {}
+        for movie_id in movie_dict:
+            if movie_dict[movie_id]['year'] is not None and movie_dict[movie_id]['year'] >= year_from:
+                result[movie_id] = movie_dict[movie_id]
+        return result
     except BaseException as e:
         raise Exception('Data not found by year from', e)
 
 
-def filter_by_to_year(dict_movies, year_to):
+def filter_by_to_year(movie_dict, year_to):
     """Filter data by parameter year_to"""
 
     try:
-        new_dict_movies = {}
-        for movie_id in dict_movies:
-            if dict_movies[movie_id]['year'] is not None and dict_movies[movie_id]['year'] <= year_to:
-                new_dict_movies[movie_id] = dict_movies[movie_id]
-        return new_dict_movies
+        result = {}
+        for movie_id in movie_dict:
+            if movie_dict[movie_id]['year'] is not None and movie_dict[movie_id]['year'] <= year_to:
+                result[movie_id] = movie_dict[movie_id]
+        return result
     except BaseException as e:
         raise Exception('Data not found by to year', e)
 
 
-def sort_by_rating(dict_movies, limit=None):
+def sort_by_rating(movie_dict, limit=None):
     """The sort movies parameter depending on the rating"""
         
     try:
         sort_dict = {}
-        list_movies = []
-        for movie_id in dict_movies:
-            sort_dict[movie_id] = dict_movies[movie_id]['rating']
+        result = []
+        for movie_id in movie_dict:
+            sort_dict[movie_id] = movie_dict[movie_id]['rating']
         sort_movies = sorted(sort_dict.items(), key=lambda kv: kv[1], reverse=True)
 
-        if limit is None or len(dict_movies) <= int(limit):
+        if limit is None or len(movie_dict) <= int(limit):
             for movie in sort_movies:
-                list_movies.append(dict_movies[movie[0]])
-            return list_movies
+                result.append(movie_dict[movie[0]])
+            return result
         else:
             for movie in sort_movies[:int(limit)]:
-                list_movies.append(dict_movies[movie[0]])
-            return list_movies
+                result.append(movie_dict[movie[0]])
+            return result
     except BaseException as e:
         raise Exception('Data not found', e)
