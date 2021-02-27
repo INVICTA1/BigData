@@ -24,11 +24,12 @@ Examples
     
     main.py -yf 2000 -yt 2020
     
-![alt text](https://bitbucket.org/coherentprojects/coherent-training-maksim-koloshinsky/src/master/task2/resources/screenshots/Screenshot_5.png )
+![alt text](resources\screenshots\Screenshot_5.png)
    
     main.py  -g "Crime|Drama" -yf 1991 -c movies
 
-![alt tag](https://bitbucket.org/coherentprojects/coherent-training-maksim-koloshinsky/src/master/task2/resources/screenshots/Screenshot_6.png )​
+![alt text](resources\screenshots\Screenshot_6.png)
+
 
 Notes
 ====================

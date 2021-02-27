@@ -1,3 +1,7 @@
+import csv
+import os
+
+
 def get_genres(cells):
     """Get genres from cells"""
 
@@ -9,7 +13,7 @@ def get_genres(cells):
 def get_name(cells):
     """Return name"""
 
-    year, list_words_from_name = find_name_and_year(cells)
+    year, list_words_from_name = get_name_and_year(cells)
     if year.isdigit():
         name = ' '.join(list_words_from_name[:-1])
     else:
@@ -33,7 +37,7 @@ def get_rating(dict_ratings, movie_id):
 def get_year(cells):
     """Return year"""
 
-    year, list_words = find_name_and_year(cells)
+    year, list_words = get_name_and_year(cells)
     if not year.isdigit():
         year = None
     else:
@@ -42,7 +46,7 @@ def get_year(cells):
     return year
 
 
-def find_name_and_year(cells):
+def get_name_and_year(cells):
     """Find name and year from cells and return this data"""
 
     if cells.__len__() == 3:
@@ -94,3 +98,30 @@ def get_movies(path, score_dict):
                                         'rating': rating}
 
     return movie_dict
+
+
+def write_result_to_csv(movie_list, name):
+    """Write result to csv file"""
+
+    csv_file = os.path.splitext(name)[0] + '.csv'
+    with open(csv_file, "w", newline="") as file:
+        columns = ['name', 'year', 'genres', 'rating']
+        writer = csv.DictWriter(file, fieldnames=columns)
+        writer.writeheader()
+        for movie in movie_list:
+            movie['genres'] = '|'.join(movie['genres'])
+        writer.writerows(movie_list)
+
+
+def print_result(movie_list):
+    """Output result on console"""
+
+    result = 'name;year;genres;rating\n'
+    delimiter = '; '
+    for movie in movie_list:
+        name = movie['name']
+        year = str(movie['year'])
+        genres = '|'.join(movie['genres'])
+        rating = str(movie['rating'])
+        result += name + delimiter + year + delimiter + genres + delimiter + rating + '\n'
+    print(result)

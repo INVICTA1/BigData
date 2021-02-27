@@ -1,40 +1,24 @@
-import csv
-import os
 import sys
-from searcher import get_scores, get_movies
-from argument import get_parser_arguments
-from filter import filter_by_regexp, filter_by_genres, filter_by_from_year, filter_by_to_year, sort_by_rating
-
+import argparse
+from movie_searcher import get_scores, get_movies, write_result_to_csv, print_result
+from movie_filter import filter_by_regexp, filter_by_genres, filter_by_from_year, filter_by_to_year, sort_by_rating
 
 PATH_TO_MOVIES = r'resources\movies.csv'
 PATH_TO_RATINGS = r'resources\ratings.csv'
 
 
-def write_movies_to_csv(movie_list, name):
-    """Write result to csv file"""
+def get_parser_arguments():
+    """Create params command line"""
 
-    csv_file = os.path.splitext(name)[0] + '.csv'
-    with open(csv_file, "w", newline="") as file:
-        columns = ['name', 'year', 'genres', 'rating']
-        writer = csv.DictWriter(file, fieldnames=columns)
-        writer.writeheader()
-        for movie in movie_list:
-            movie['genres'] = '|'.join(movie['genres'])
-        writer.writerows(movie_list)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-l', '--limit', type=int, default=None, help='Number of returned items')
+    parser.add_argument('-r', '--regex', type=str, default=None, help='Regular expression')
+    parser.add_argument('-g', '--genres', type=str, default=None, help='Genres of movie')
+    parser.add_argument('-yf', '--year_from', type=int, default=None, help='Movies from a certain year')
+    parser.add_argument('-yt', '--year_to', type=int, default=None, help='Movies up to a certain year')
+    parser.add_argument('-c', '--csv', type=str, default=None, help='Writing to a csv file')
 
-
-def output_movies(movie_list):
-    """Output result on console"""
-
-    result = 'name;year;genres;rating\n'
-    delimiter = '; '
-    for movie in movie_list:
-        name = movie['name']
-        year = str(movie['year'])
-        genres = '|'.join(movie['genres'])
-        rating = str(movie['rating'])
-        result += name + delimiter + year + delimiter + genres + delimiter + rating + '\n'
-    print(result)
+    return parser
 
 
 def main():
@@ -59,9 +43,9 @@ def main():
         else:
             movie_list = sort_by_rating(movie_dict)
         if namespace.csv is not None:
-            write_movies_to_csv(movie_list, namespace.csv)
+            write_result_to_csv(movie_list, namespace.csv)
         else:
-            output_movies(movie_list)
+            print_result(movie_list)
     except BaseException as e:
         raise Exception('Data not found', e)
 
