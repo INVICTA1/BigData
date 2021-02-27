@@ -1,8 +1,11 @@
 import builtins
 import sys
 import re
+import csv
 from argument import Arguments
+from filter import filter_by_regexp, filter_by_genres, filter_by_from_year, filter_by_to_year, sort_by_rating
 
+FILENAME = "movies.csv"
 path_to_movies = r'resources\movies.csv'
 path_to_ratings = r'resources\ratings.csv'
 
@@ -33,20 +36,6 @@ def get_genres(cells):
     return genres.split('|')
 
 
-def find_name_and_year(cells):
-    """Find name and year from cells and return this data"""
-
-    if cells.__len__() == 3:
-        name_with_year = cells[1]
-    else:
-        name_with_year = ','.join(cells[1:-1])
-    list_words_from_name = name_with_year.split(' ')
-    year_from_name = list_words_from_name[-1]
-    year = year_from_name[year_from_name.find('(') + 1: year_from_name.find(')')]
-
-    return year, list_words_from_name
-
-
 def get_name(cells):
     """Return name"""
 
@@ -59,16 +48,6 @@ def get_name(cells):
     return name_movie
 
 
-def get_year(cells):
-    """Return year"""
-
-    year, list_words_from_name = find_name_and_year(cells)
-    if not year.isdigit():
-        year = None
-
-    return year
-
-
 def get_rating(dict_ratings, movie_id):
     """Find average rating and return rating data """
 
@@ -76,7 +55,7 @@ def get_rating(dict_ratings, movie_id):
         list_score = dict_ratings[movie_id]
         rating = round(sum(list_score) / len(list_score), 1)
     else:
-        rating = None
+        rating = 0
 
     return rating
 
@@ -103,59 +82,60 @@ def get_movies(path, dict_scores):
     return dict_movies
 
 
-def filter_by_regexp(dict_movies, regexp):
-    try:
-        new_dict_movies = {}
-        for movie_id in dict_movies:
-            if dict_movies[movie_id]['name'].__contains__(regexp):
-                new_dict_movies[movie_id] = dict_movies[movie_id]
-        return new_dict_movies
-    except BaseException as e:
-        raise Exception('Data not found', e)
+def get_year(cells):
+    """Return year"""
+
+    year, list_words_from_name = find_name_and_year(cells)
+    if not year.isdigit():
+        year = None
+
+    return year
 
 
-def filter_by_genres(dict_movies, genres):
-    try:
-        new_dict_movies = {}
-        for movie_id in dict_movies:
-            if set(dict_movies[movie_id]['genres']) & set(genres):
-                new_dict_movies[movie_id] = dict_movies[movie_id]
-        return new_dict_movies
-    except BaseException as e:
-        raise Exception('Data not found', e)
+def find_name_and_year(cells):
+    """Find name and year from cells and return this data"""
+
+    if cells.__len__() == 3:
+        name_with_year = cells[1]
+    else:
+        name_with_year = ','.join(cells[1:-1])
+    list_words_from_name = name_with_year.split(' ')
+    year_from_name = list_words_from_name[-1]
+    year = year_from_name[year_from_name.find('(') + 1: year_from_name.find(')')]
+
+    return year, list_words_from_name
 
 
-def filter_by_from_year(dict_movies, year_from):
-    try:
-        new_dict_movies = {}
-        for movie_id in dict_movies:
-            if dict_movies[movie_id]['year'] is not None and dict_movies[movie_id]['year'] >= year_from:
-                new_dict_movies[movie_id] = dict_movies[movie_id]
-        return new_dict_movies
-    except BaseException as e:
-        raise Exception('Data not found year_from', e)
+def write_sorted_movies(dict_movies, movie):
+    name = dict_movies[movie[0]]['name']
+    genre = dict_movies[movie[0]]['genres']
+    genres = '|'.join(genre)
+    year = str(dict_movies[movie[0]]['year'])
+    rating = str(dict_movies[movie[0]]['rating'])
+
+    return name, genres, year, rating
 
 
-def filter_by_to_year(dict_movies, year_to):
-    try:
-        new_dict_movies = {}
-        for movie_id in dict_movies:
-            if dict_movies[movie_id]['year'] is not None and dict_movies[movie_id]['year'] <= year_to:
-                new_dict_movies[movie_id] = dict_movies[movie_id]
-        return new_dict_movies
-    except BaseException as e:
-        raise Exception('Data not found', e)
+def write_movies_to_csv(list_movies):
+    with open(FILENAME, "w", newline="") as file:
+        columns = ['name', 'year', 'genres', 'rating']
+        writer = csv.DictWriter(file, fieldnames=columns)
+        writer.writeheader()
+        for movie in list_movies:
+            movie['genres'] = '|'.join(movie['genres'])
+        writer.writerows(list_movies)
 
 
-def sort_by_rating(dict_movies, count=None):
-    try:
-        sort_dict = {}
-        for movie_id in dict_movies:
-            sort_dict[dict_movies[movie_id]['rating']] = movie_id
-        sort_dict.keys()
-
-    except BaseException as e:
-        raise Exception('Data not found', e)
+def output_movies(list_movies):
+    result = 'name;year;genres;rating\n'
+    delimiter = '; '
+    for movie in list_movies:
+        name = movie['name']
+        year = str(movie['year'])
+        genres = '|'.join(movie['genres'])
+        rating = str(movie['rating'])
+        result += name + delimiter + year + delimiter + genres + delimiter + rating + '\n'
+    print(result)
 
 
 def main():
@@ -173,17 +153,17 @@ def main():
             dict_movies = filter_by_from_year(dict_movies, arguments.year_from)
         if arguments.year_to is not None:
             dict_movies = filter_by_to_year(dict_movies, arguments.year_to)
-        print(dict_movies)
-        # if arguments.count is not None:
-        #     movies = sort_by_rating(dict_movies, arguments.count)
-        # else:
-        #     movies = sort_by_rating(dict_movies)
-        print(arguments.genres, arguments.regexp, arguments.count, arguments.year_to, arguments.year_from)
+        if arguments.limit is not None:
+            list_movies = sort_by_rating(dict_movies, arguments.limit)
+        else:
+            list_movies = sort_by_rating(dict_movies)
+        if arguments.csv is not None:
+            write_movies_to_csv(list_movies)
+        else:
+            output_movies(list_movies)
+        # print(dict_movies)
     except BaseException as e:
         raise Exception('Data not found', e)
-
-
-
 
 
 if __name__ == '__main__':

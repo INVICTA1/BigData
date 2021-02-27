@@ -1,21 +1,24 @@
 import sys
 
 
-# count -n, regexp -r genres -g, year_from -yf,year_to -yt,
+# limit -n, regexp -r genres -g, year_from -yf,year_to -yt,
 
 class Arguments:
     def __init__(self):
-        self.argument_count = '-n'
+        self.argument_limit = '-l'
         self.argument_regexp = '-r'
         self.argument_genres = '-g'
         self.argument_year_from = '-yf'
         self.argument_year_to = '-yt'
+        self.argument_csv = '-csv'
 
-        self.count = None
+        self.limit = None
         self.regexp = None
         self.genres = None
         self.year_from = None
         self.year_to = None
+        self.csv = None
+
 
     @staticmethod
     def get_argument(list_arguments, argument):
@@ -24,12 +27,13 @@ class Arguments:
 
     def find_arguments(self):
         list_arguments = sys.argv[1:]
-        if list_arguments.__len__() % 2 == 0 and list_arguments.__len__() > 10:
+        if list_arguments.__len__() % 2 == 0 and list_arguments.__len__() > 12:
             raise Exception('Data entered incorrectly')
-        self.count = self.get_argument(list_arguments, self.argument_count)
+        self.limit = self.get_argument(list_arguments, self.argument_limit)
         self.regexp = self.get_argument(list_arguments, self.argument_regexp)
         genres = self.get_argument(list_arguments, self.argument_genres)
         if genres is not None:
             self.genres = genres.split('|')
         self.year_from = self.get_argument(list_arguments, self.argument_year_from)
         self.year_to = self.get_argument(list_arguments, self.argument_year_to)
+        self.csv = self.get_argument(list_arguments, self.argument_csv)
