@@ -1,4 +1,5 @@
 import csv
+import os
 from argument import Arguments
 from filter import filter_by_regexp, filter_by_genres, filter_by_from_year, filter_by_to_year, sort_by_rating
 
@@ -103,10 +104,11 @@ def find_name_and_year(cells):
     return year, list_words_from_name
 
 
-def write_movies_to_csv(list_movies):
+def write_movies_to_csv(list_movies,name):
     """Write result to csv file"""
 
-    with open(FILENAME, "w", newline="") as file:
+    csv_file = os.path.splitext(name)[0]+'.csv'
+    with open(csv_file, "w", newline="") as file:
         columns = ['name', 'year', 'genres', 'rating']
         writer = csv.DictWriter(file, fieldnames=columns)
         writer.writeheader()
@@ -151,7 +153,7 @@ def main():
         else:
             list_movies = sort_by_rating(dict_movies)
         if arguments.csv is not None:
-            write_movies_to_csv(list_movies)
+            write_movies_to_csv(list_movies,arguments.csv)
         else:
             output_movies(list_movies)
     except BaseException as e:
