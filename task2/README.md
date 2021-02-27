@@ -23,11 +23,9 @@ Examples
 ![alt text](resources/screenshots/Screenshot_4.png)
     
     main.py -yf 2000 -yt 2020
-    
 ![alt text](resources\screenshots\Screenshot_5.png)
    
     main.py  -g "Crime|Drama" -yf 1991 -c movies
-
 ![alt text](resources\screenshots\Screenshot_6.png)
 
 
