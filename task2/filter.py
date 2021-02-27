@@ -1,10 +1,9 @@
 import re
 
 
-# return list(filter(lambda movie: re.search(regexp, movies[movie]['name']), movies))
-
-
 def filter_by_regexp(dict_movies, regexp):
+    """Filter data by parameter regexp"""
+
     try:
         new_dict_movies = {}
         for movie_id in dict_movies:
@@ -16,6 +15,8 @@ def filter_by_regexp(dict_movies, regexp):
 
 
 def filter_by_genres(dict_movies, genres):
+    """Filter data by parameter genres"""
+
     try:
         new_dict_movies = {}
         for movie_id in dict_movies:
@@ -27,6 +28,8 @@ def filter_by_genres(dict_movies, genres):
 
 
 def filter_by_from_year(dict_movies, year_from):
+    """Filter data by parameter year_from"""
+
     try:
         new_dict_movies = {}
         for movie_id in dict_movies:
@@ -38,6 +41,8 @@ def filter_by_from_year(dict_movies, year_from):
 
 
 def filter_by_to_year(dict_movies, year_to):
+    """Filter data by parameter year_to"""
+
     try:
         new_dict_movies = {}
         for movie_id in dict_movies:
@@ -49,6 +54,8 @@ def filter_by_to_year(dict_movies, year_to):
 
 
 def sort_by_rating(dict_movies, limit=None):
+    """The sort movies parameter depending on the rating"""
+        
     try:
         sort_dict = {}
         list_movies = []
@@ -64,5 +71,6 @@ def sort_by_rating(dict_movies, limit=None):
             for movie in sort_movies[:int(limit)]:
                 list_movies.append(dict_movies[movie[0]])
             return list_movies
+
     except BaseException as e:
         raise Exception('Data not found', e)

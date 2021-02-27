@@ -1,6 +1,3 @@
-import builtins
-import sys
-import re
 import csv
 from argument import Arguments
 from filter import filter_by_regexp, filter_by_genres, filter_by_from_year, filter_by_to_year, sort_by_rating
@@ -106,17 +103,9 @@ def find_name_and_year(cells):
     return year, list_words_from_name
 
 
-def write_sorted_movies(dict_movies, movie):
-    name = dict_movies[movie[0]]['name']
-    genre = dict_movies[movie[0]]['genres']
-    genres = '|'.join(genre)
-    year = str(dict_movies[movie[0]]['year'])
-    rating = str(dict_movies[movie[0]]['rating'])
-
-    return name, genres, year, rating
-
-
 def write_movies_to_csv(list_movies):
+    """Write result to csv file"""
+
     with open(FILENAME, "w", newline="") as file:
         columns = ['name', 'year', 'genres', 'rating']
         writer = csv.DictWriter(file, fieldnames=columns)
@@ -127,6 +116,8 @@ def write_movies_to_csv(list_movies):
 
 
 def output_movies(list_movies):
+    """Output result on console"""
+
     result = 'name;year;genres;rating\n'
     delimiter = '; '
     for movie in list_movies:
@@ -139,6 +130,8 @@ def output_movies(list_movies):
 
 
 def main():
+    """Processing the command line and output result"""
+
     dict_scores = get_scores(path_to_ratings)
     dict_movies = get_movies(path_to_movies, dict_scores)
 
@@ -161,7 +154,6 @@ def main():
             write_movies_to_csv(list_movies)
         else:
             output_movies(list_movies)
-        # print(dict_movies)
     except BaseException as e:
         raise Exception('Data not found', e)
 

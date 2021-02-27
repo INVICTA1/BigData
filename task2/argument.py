@@ -4,6 +4,8 @@ import sys
 # limit -n, regexp -r genres -g, year_from -yf,year_to -yt,
 
 class Arguments:
+    """class  argument, the constructor creates command line arguments"""
+
     def __init__(self):
         self.argument_limit = '-l'
         self.argument_regexp = '-r'
@@ -19,13 +21,17 @@ class Arguments:
         self.year_to = None
         self.csv = None
 
-
     @staticmethod
     def get_argument(list_arguments, argument):
+        """Get argument from command line"""
+
         if argument in list_arguments:
+
             return list_arguments[list_arguments.index(argument) + 1]
 
     def find_arguments(self):
+        """Find argument command line"""
+
         list_arguments = sys.argv[1:]
         if list_arguments.__len__() % 2 == 0 and list_arguments.__len__() > 12:
             raise Exception('Data entered incorrectly')
