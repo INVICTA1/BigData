@@ -18,6 +18,7 @@ def filter_by_genres(movie_dict, genres):
     """Filter data by parameter genres"""
 
     try:
+        genres = genres.split('|')
         result = {}
         for movie_id in movie_dict:
             if set(movie_dict[movie_id]['genres']) & set(genres):
