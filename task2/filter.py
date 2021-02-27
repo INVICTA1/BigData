@@ -71,6 +71,5 @@ def sort_by_rating(dict_movies, limit=None):
             for movie in sort_movies[:int(limit)]:
                 list_movies.append(dict_movies[movie[0]])
             return list_movies
-
     except BaseException as e:
         raise Exception('Data not found', e)
