@@ -20,12 +20,22 @@ main.py [-l] limit [-r] regex [-g] genres [-yf] year_from [-yt] year_to  [-csv] 
 Examples
 ====================
     main.py -l 5 -r War -g "Comedy|Drama" -yf 1980 -yt 2000
+
+
 ![alt text](resources/screenshots/Screenshot_4.png)
     
     main.py -yf 2000 -yt 2020
+    
+====================
+
 ![alt text](resources\screenshots\Screenshot_5.png)
-   
+ 
+  
     main.py  -g "Crime|Drama" -yf 1991 -c movies
+    
+====================
+
+
 ![alt text](resources\screenshots\Screenshot_6.png)
 
 
