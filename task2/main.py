@@ -1,6 +1,8 @@
 import sys
 import argparse
-from movie_searcher import read_scores, read_movies, write_result_to_csv, print_result, map_scores_to_movies
+from rating_parser import read_rating
+from output import write_result_to_csv, print_result
+from movie_parser import  read_movies, map_scores_to_movies
 from movie_filter import filter_by_regexp, filter_by_genres, filter_by_from_year, filter_by_to_year, \
     sort_by_rating_and_limit
 
@@ -26,7 +28,7 @@ def main():
     """Processing the command line and output result"""
 
     try:
-        scores = read_scores(PATH_TO_RATINGS)
+        scores = read_rating(PATH_TO_RATINGS)
         movies = read_movies(PATH_TO_MOVIES)
         movies = map_scores_to_movies(movies, scores)
         parser = get_parser_arguments()
