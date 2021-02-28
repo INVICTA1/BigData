@@ -11,7 +11,7 @@ def get_genres(cells):
 
 
 def get_name(cells):
-    """Return name"""
+    """Return file_name"""
 
     year, list_words_from_name = get_name_and_year(cells)
     if year.isdigit():
@@ -20,18 +20,6 @@ def get_name(cells):
         name = ' '.join(list_words_from_name)
 
     return name
-
-
-def get_rating(dict_ratings, movie_id):
-    """Find average rating and return rating data """
-
-    if dict_ratings.get(movie_id):
-        scores = dict_ratings[movie_id]
-        rating = round(sum(scores) / len(scores), 1)
-    else:
-        rating = 0
-
-    return rating
 
 
 def get_year(cells):
@@ -47,7 +35,7 @@ def get_year(cells):
 
 
 def get_name_and_year(cells):
-    """Find name and year from cells and return this data"""
+    """Find file_name and year from cells and return this data"""
 
     if cells.__len__() == 3:
         name_with_year = cells[1]
@@ -60,7 +48,7 @@ def get_name_and_year(cells):
     return year, words_list
 
 
-def get_scores(path):
+def read_scores(path: str) -> dict:
     """Read csv file and return dict{movieId:[rating]}"""
 
     score_dict = {}
@@ -78,47 +66,60 @@ def get_scores(path):
     return score_dict
 
 
-def get_movies(path, score_dict):
+def map_scores_to_movies(movies: list, scores: dict) -> list:
+    """Map scores to movies"""
+
+    for movie in movies:
+        if scores.get(movie['id']):
+            score = scores[movie['id']]
+            rating = round(sum(score) / len(score), 1)
+            movie['rating'] = rating
+        else:
+            movie['rating'] = 0
+
+    return movies
+
+
+def read_movies(path: str) -> list:
     """Read CSV file adn create movie dictionary """
 
-    movie_dict = {}
+    movies = []
     with open(path) as csv_file:
         for line in csv_file:
             row = csv_file.readline()
             if row:
                 cells = row.split(',')
-                movie_id = int(cells[0])
+                id = int(cells[0])
                 genres = get_genres(cells)
-                name_movie = get_name(cells)
+                name = get_name(cells)
                 year = get_year(cells)
-                rating = get_rating(score_dict, movie_id)
-                movie_dict[movie_id] = {'name': name_movie,
-                                        'year': year,
-                                        'genres': genres,
-                                        'rating': rating}
+                movies.append({'id': id,
+                               'name': name,
+                               'year': year,
+                               'genres': genres})
 
-    return movie_dict
+    return movies
 
 
-def write_result_to_csv(movie_list, name):
+def write_result_to_csv(movies: list, file_name: str):
     """Write result to csv file"""
 
-    csv_file = os.path.splitext(name)[0] + '.csv'
+    csv_file = os.path.splitext(file_name)[0] + '.csv'
     with open(csv_file, "w", newline="") as file:
         columns = ['name', 'year', 'genres', 'rating']
         writer = csv.DictWriter(file, fieldnames=columns)
         writer.writeheader()
-        for movie in movie_list:
+        for movie in movies:
             movie['genres'] = '|'.join(movie['genres'])
-        writer.writerows(movie_list)
+        writer.writerows(movies)
 
 
-def print_result(movie_list):
+def print_result(movies: list):
     """Output result on console"""
 
     result = 'name;year;genres;rating\n'
     delimiter = '; '
-    for movie in movie_list:
+    for movie in movies:
         name = movie['name']
         year = str(movie['year'])
         genres = '|'.join(movie['genres'])

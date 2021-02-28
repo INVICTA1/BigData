@@ -4,7 +4,7 @@ from pyarrow import parquet, Table
 
 
 def get_file_name(infile):
-    """Return name file which is being processed """
+    """Return file_name file which is being processed """
 
     basename = os.path.basename(infile)
     name_infile = os.path.splitext(basename)[0]
