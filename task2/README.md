@@ -8,7 +8,7 @@ https://www.python.org/downloads/
 
 Usage
 ====================
-main.py [-l] limit [-r] regex [-g] genres [-yf] year_from [-yt] year_to  [-csv] True  
+main.py [-n] number [-r] regex [-g] genres [-yf] year_from [-yt] year_to  
 
     -n      --number        Limit of returned items
     -r      --regex         Regex to search by name
@@ -21,7 +21,7 @@ Examples
     main.py -n 5 -r War -g "Comedy|Drama" -yf 1980 -yt 2000
 
 
-![alt text](resources/screenshots/Screenshot_7.png)
+![alt text](resources/screenshots/Screenshot_8.png)
     
     main.py -yf 2000 -yt 2020
     main.py  -g "Crime|Drama" -yf 1991 -c movies
