@@ -65,11 +65,11 @@ def read_movies(path: str) -> list:
         with open(path, "r", newline="") as file:
             reader = csv.reader(file)
             next(reader, None)
-            for row in reader:
-                id = int(row[0])
-                name = get_name(row[1])
-                year = get_year(row[1])
-                genres = split_genres(row[2])
+            for movie_id, title, genres in reader:
+                id = int(movie_id)
+                name = get_name(title)
+                year = get_year(title)
+                genres = split_genres(genres)
                 movies.append({'id': id,
                                'name': name,
                                'year': year,
