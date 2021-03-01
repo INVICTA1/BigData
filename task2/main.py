@@ -1,8 +1,7 @@
 import sys
 import argparse
-from rating_parser import read_rating
-from output import print_result
-from movie_parser import read_movies, map_scores_to_movies
+
+from movie_parser import read_movies, map_scores_to_movies, print_result, read_rating
 from movie_filter import filter_by_regexp, filter_by_genres, filter_by_from_year, filter_by_to_year, \
     sort_by_rating, sort_by_number_genres
 

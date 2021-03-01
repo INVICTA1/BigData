@@ -41,6 +41,22 @@ def map_scores_to_movies(movies: list, scores: dict) -> list:
     return movies
 
 
+def print_result(movies: list):
+    """Output result on console"""
+
+    result = 'genres,name,year,rating'
+    print(result)
+    for movie in movies:
+        genres = movie['genres']
+        if type(genres) == list:
+            genres = '|'.join(genres)
+        name = movie['name']
+        year = str(movie['year'])
+        rating = str(movie['rating'])
+        result = '{0},{1},{2},{3}'.format(genres, name, year, rating)
+        print(result)
+
+
 def read_movies(path: str) -> list:
     """Read CSV file adn create movie dictionary """
 
@@ -62,3 +78,23 @@ def read_movies(path: str) -> list:
         return movies
     except BaseException as e:
         raise Exception("Can't read movies file", e)
+
+
+def read_rating(path: str) -> dict:
+    """Read csv file and return dict{movieId:[rating]}"""
+    try:
+        scores = {}
+        with open(path, "r", newline="") as file:
+            reader = csv.reader(file)
+            next(reader, None)
+            for row in reader:
+                movie_id = int(row[1])
+                score = float(row[2])
+                if scores.get(movie_id):
+                    scores[movie_id]['sum'] += score
+                    scores[movie_id]['num'] += 1
+                else:
+                    scores[movie_id] = {'sum': score, 'num': 1}
+        return scores
+    except BaseException as e:
+        raise Exception("Can't read rating file", e)
