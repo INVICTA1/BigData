@@ -10,33 +10,23 @@ Usage
 ====================
 main.py [-l] limit [-r] regex [-g] genres [-yf] year_from [-yt] year_to  [-csv] True  
 
-    -l          Limit of returned items
-    -r          Regex to search by name
-    -g          Search by genres    
-    -yf         Search for movies from the year
-    -yt         Search for movies up to a year
-    -csv        Writing the result to a csv file
+    -n      --number        Limit of returned items
+    -r      --regex         Regex to search by name
+    -g      --genres        Search by genres    
+    -yf     --year_from     Search for movies from the year
+    -yt     --year_to       Search for movies up to a year
 
 Examples
 ====================
-    main.py -l 5 -r War -g "Comedy|Drama" -yf 1980 -yt 2000
+    main.py -n 5 -r War -g "Comedy|Drama" -yf 1980 -yt 2000
 
 
-![alt text](resources/screenshots/Screenshot_4.png)
+![alt text](resources/screenshots/Screenshot_7.png)
     
     main.py -yf 2000 -yt 2020
-    
-====================
-
-![alt text](resources\screenshots\Screenshot_5.png)
- 
-  
     main.py  -g "Crime|Drama" -yf 1991 -c movies
     
-====================
 
-
-![alt text](resources\screenshots\Screenshot_6.png)
 
 
 Notes

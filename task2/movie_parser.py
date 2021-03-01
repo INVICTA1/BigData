@@ -11,7 +11,7 @@ def split_genres(cell: str) -> list:
 def get_name(cell: str) -> str:
     """search for a name in a cell"""
 
-    return re.sub(r'\((\d+)\)', '', cell)
+    return re.sub(r'\((\d+)\)', '', cell).strip()
 
 
 def get_year(cell: str) -> int:
@@ -31,8 +31,9 @@ def map_scores_to_movies(movies: list, scores: dict) -> list:
 
     for movie in movies:
         if scores.get(movie['id']):
-            score = scores[movie['id']]
-            rating = round(sum(score) / len(score), 1)
+            sum = scores[movie['id']]['sum']
+            num = scores[movie['id']]['num']
+            rating = round(sum / num, 1)
             movie['rating'] = rating
         else:
             movie['rating'] = 0
@@ -43,18 +44,21 @@ def map_scores_to_movies(movies: list, scores: dict) -> list:
 def read_movies(path: str) -> list:
     """Read CSV file adn create movie dictionary """
 
-    movies = []
-    with open(path, "r", newline="") as file:
-        reader = csv.reader(file)
-        next(reader, None)
-        for row in reader:
-            id = int(row[0])
-            name = get_name(row[1])
-            year = get_year(row[1])
-            genres = split_genres(row[2])
-            movies.append({'id': id,
-                           'name': name,
-                           'year': year,
-                           'genres': genres})
+    try:
+        movies = []
+        with open(path, "r", newline="") as file:
+            reader = csv.reader(file)
+            next(reader, None)
+            for row in reader:
+                id = int(row[0])
+                name = get_name(row[1])
+                year = get_year(row[1])
+                genres = split_genres(row[2])
+                movies.append({'id': id,
+                               'name': name,
+                               'year': year,
+                               'genres': genres})
 
-    return movies
+        return movies
+    except BaseException as e:
+        raise Exception("Can't read movies file", e)
